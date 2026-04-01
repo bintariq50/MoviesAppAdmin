@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 import HomeScreen from "../screens/Home"
-import MovieScreen from "../screens/Movie"
+import MovieStack from "../navigation/MovieStack"
 import ProfileScreen from "../screens/Profile"
 import COLORS from "../utils/colors"
 
@@ -35,13 +35,17 @@ export default function BottomTabNavigation() {
                 shadowOpacity: 0.8,
                 borderTopWidth: 0,
                 height: 60,
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
             },
             tabBarShowLabel: false,
             tabBarActiveTintColor: COLORS.brandPrimary,
             tabBarInactiveTintColor: COLORS.inActiveTintColor
         })} >
             <Tab.Screen name="HomeTab" component={HomeScreen} options={{ unmountOnBlur: true }} />
-            <Tab.Screen name="MovieTab" component={MovieScreen} options={{ unmountOnBlur: true }}  />
+            <Tab.Screen name="MovieTab" component={MovieStack} options={{ unmountOnBlur: true }} />
             <Tab.Screen name="ProfileTab" component={ProfileScreen} />
         </Tab.Navigator >
     )

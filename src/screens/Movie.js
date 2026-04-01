@@ -10,13 +10,16 @@ import { useIsFocused } from '@react-navigation/native';
 
 import { launchImageLibrary } from 'react-native-image-picker';
 
+import Video from "react-native-video";
+
 
 export default function Movie() {
     const isFocused = useIsFocused();
-    
+
     const [name, setName] = useState();
     const [genre, setGenre] = useState();
     const [image, setImage] = useState();
+    const [video, setVideo] = useState();
 
     const [isDisabled, setIsDisabled] = useState(false);
 
@@ -73,6 +76,7 @@ export default function Movie() {
         setName(movieData.name)
         setGenre(movieData.genre)
         setImage(movieData.imageUrl)
+        setImage(movieData.videoUrl)
         setShowModal(true)
 
     }
@@ -119,11 +123,13 @@ export default function Movie() {
             setIsDisabled(true)
 
             const imageUrl = await hanleUploadImage(image);
-
+            const videoUrl = await handleUploadVideo(video)
             let data = {
                 name: name.trim(),
                 genre: genre,
                 imageUrl: imageUrl,
+                videoUrl: videoUrl
+
             };
             if (isEdit) {
                 data.updatedAt = Date.now()
@@ -164,6 +170,26 @@ export default function Movie() {
         }
     }
 
+    const handleVideoPicker = async () => {
+        try {
+            const response = await launchImageLibrary({
+                mediaType: "video"
+            });
+            if (response.didCancel) {
+                console.log("User cancelled image picker");
+            } else if (response.error) {
+                console.log("ImagePicker Error:", response.error);
+            } else {
+                const source = response.assets[0].uri;
+                setVideo(source);
+                console.log("Video selected: ", source);
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const hanleUploadImage = async (url) => {
         try {
             let data = new FormData();
@@ -180,6 +206,26 @@ export default function Movie() {
             return result.secure_url;
         } catch (error) {
             console.log("Error", "while uploading image to cloudinary", error);
+        }
+    }
+
+
+    const handleUploadVideo = async (url) => {
+        try {
+            let data = new FormData();
+            data.append("file", {
+                uri: url,
+                type: "video/mp4",
+                name: 'upload.mp4'
+            });
+            data.append("upload_preset", "react-native");
+
+            const res = await fetch(`https://api.cloudinary.com/v1_1/dip79ibqr/video/upload`, { method: "POST", body: data }
+            );
+            const result = await res.json();
+            return result.secure_url;
+        } catch (error) {
+            console.log("Error", "while uploading video to cloudinary", error);
         }
     }
 
@@ -213,7 +259,7 @@ export default function Movie() {
                             // console.log(category)
                             return (
                                 <Banner id={item.id} handleEdit={handleEditMovie}
-                                    handleDelete={handleDeleteMovie} picture_url={item.imageUrl}
+                                    handleDelete={handleDeleteMovie} video_url={item.videoUrl} picture_url={item.imageUrl}
                                     name={item.name} genre={category?.name} />
                             )
                         }
@@ -273,11 +319,18 @@ export default function Movie() {
 
                         <Text style={styles.label}>Image</Text>
                         {image && <Image source={{ uri: image }}
-                            style={{ width: 300, height: 200, marginBottom: 10 }}
+                            style={{ width: "auto", height: 150 }}
                             resizeMode="contain" />}
                         <View style={styles.buttonRow}>
                             <Pressable style={styles.submitBtn} onPress={handleImagePicker}>
                                 <Text style={styles.submitText}>Select Image</Text>
+                            </Pressable>
+                        </View>
+                        {video && <Video source={{ uri: video }} style={{ width: "auto", height: 150, marginBottom: 10 }}
+                            resizeMode="contain" controls={false} />}
+                        <View style={styles.buttonRow}>
+                            <Pressable style={styles.submitBtn} onPress={handleVideoPicker}>
+                                <Text style={styles.submitText}>Select video</Text>
                             </Pressable>
 
 

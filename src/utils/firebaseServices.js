@@ -104,12 +104,11 @@ const deleteCategory = async (id) => {
 
         if (!moviesRef.empty) {
             moviesRef.forEach((item) => {
-                batch.delete(item.ref);
-                console.log("Hi")
+                batch.update(item.ref, {genre: ""});
             })
             await batch.commit();
         }
-
+     
 
         await deleteDoc(categoryRef);
     } catch (error) {

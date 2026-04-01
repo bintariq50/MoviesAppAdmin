@@ -23,42 +23,46 @@ export default function Home() {
     const [isEdit, setIsEdit] = useState(false)
     const [editId, setEditId] = useState();
 
+    useEffect(() => {
+        const categoriesFetch = async () => {
+            setLoading(true);
+            const categories = await fetchCategories();
+            setCategories(categories);
+            setLoading(false);
+        };
+        categoriesFetch();
+    }, [refresh, isFocused]);
+
+
     const handleShowModal = () => setShowModal(true);
     const handleHideModal = () => setShowModal(false);
 
     const handlePressDelete = async (id) => {
-        try {
-            const deleteCat = async () => {
-                await deleteCategory(id)
-                setRefresh(prev => prev + 1);
-
-            }
-            Alert.alert("Confim", "Are you sure you want to delete?", [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Delete",
-                    onPress: () => deleteCat(),
-                    style: "default"
-                }
-            ])
-        } catch (error) {
-            console.log("Error", "while deleting category", error)
+        const deleteCat = async () => {
+            await deleteCategory(id)
+            setRefresh(prev => prev + 1);
         }
+        Alert.alert("Confim", "Are you sure you want to delete?", [
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+            },
+            {
+                text: "Delete",
+                onPress: () => deleteCat(),
+                style: "default"
+            }
+        ])
+
     }
     const handlePressEdit = async (id) => {
-        setIsEdit(true);
         const categoryData = await getCategory(id)
-
         setGenre(categoryData.name)
+
+        setIsEdit(true);
         setEditId(id)
-
         handleShowModal(true)
-
-
 
     }
 
@@ -76,7 +80,7 @@ export default function Home() {
                 // console.log(data)
                 await updateCategory(editId, data)
                 setIsEdit(false)
-                setEditId("");
+                setEditId(null);
             }
             else {
                 data.createdAt = Date.now();
@@ -93,15 +97,6 @@ export default function Home() {
         }
     };
 
-    useEffect(() => {
-        const categoriesFetch = async () => {
-            setLoading(true);
-            const categories = await fetchCategories();
-            setCategories(categories);
-            setLoading(false);
-        };
-        categoriesFetch();
-    }, [refresh, isFocused]);
 
     if (loading) {
         return (
@@ -112,6 +107,7 @@ export default function Home() {
     }
 
     return (
+
         <View style={styles.container}>
             <View style={styles.categoriesContainer}>
                 <View style={styles.header}>
