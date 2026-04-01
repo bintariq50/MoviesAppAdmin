@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Mulish-Bold.ttf",
+      "sha1": "f3888ae5a70ddae97b73cfcdec86b51de4ead17e"
+    },
+    {
+      "path": "src/assets/fonts/Mulish-Regular.ttf",
+      "sha1": "8202762dfb9b01c8086660c73043c53ab127bd49"
+    }
+  ]
+}
