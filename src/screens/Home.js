@@ -50,20 +50,15 @@ export default function Home() {
         }
     }
     const handlePressEdit = async (id) => {
-        try {
-            setIsEdit(true);
+        setIsEdit(true);
+        const categoryData = await getCategory(id)
 
-            const categoryData = await getCategory(id)
+        setGenre(categoryData.name)
+        setEditId(id)
 
-            setGenre(categoryData.name)
-            setEditId(id)
-            handleShowModal(true)
-        } catch (error) {
-            console.log("Error", "while editing the category", error)
-        } finally {
-            setEditId("")
-            setIsEdit(true)
-        }
+        handleShowModal(true)
+
+
 
     }
 
@@ -73,7 +68,7 @@ export default function Home() {
                 Alert.alert("Error", "Please enter category");
                 return;
             }
-            const data = { name: genre };
+            const data = { name: genre.trim() };
 
             setIsDisabled(true)
             if (isEdit) {
@@ -153,7 +148,7 @@ export default function Home() {
                 >
                     <View style={styles.modalBackground}>
                         <View style={styles.modalCard}>
-                            <Text style={styles.modalHeading}>Add Category</Text>
+                            <Text style={styles.modalHeading}>{isEdit ? "Update" : "Add"} Category</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Enter category"
@@ -257,7 +252,8 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     direction: {
-        flexDirection: "row"
+        flexDirection: "row",
+        justifyContent: "space-between"
     },
     input: {
         borderWidth: 1,

@@ -13,6 +13,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 
 export default function Movie() {
     const isFocused = useIsFocused();
+    
     const [name, setName] = useState();
     const [genre, setGenre] = useState();
     const [image, setImage] = useState();
@@ -64,23 +65,16 @@ export default function Movie() {
     }
 
     const handleEditMovie = async (id) => {
-        try {
-            setIsEdit(true)
-            const movieData = await getMovie(id);
 
-            setEditId(id)
-            setName(movieData.name)
-            setGenre(movieData.genre)
-            setImage(movieData.imageUrl)
-            setShowModal(true)
-        }
-        catch (error) {
-            console.log("Error", "while editing movie", error)
-        } finally {
-            setIsEdit(false)
-            setEditId("")
+        setIsEdit(true)
+        const movieData = await getMovie(id);
 
-        }
+        setEditId(id)
+        setName(movieData.name)
+        setGenre(movieData.genre)
+        setImage(movieData.imageUrl)
+        setShowModal(true)
+
     }
 
     const handleDeleteMovie = async (id) => {
@@ -127,7 +121,7 @@ export default function Movie() {
             const imageUrl = await hanleUploadImage(image);
 
             let data = {
-                name: name,
+                name: name.trim(),
                 genre: genre,
                 imageUrl: imageUrl,
             };
@@ -180,12 +174,7 @@ export default function Movie() {
             });
             data.append("upload_preset", "react-native");
 
-            const res = await fetch(
-                `https://api.cloudinary.com/v1_1/dip79ibqr/image/upload`,
-                {
-                    method: "POST",
-                    body: data
-                }
+            const res = await fetch(`https://api.cloudinary.com/v1_1/dip79ibqr/image/upload`, { method: "POST", body: data }
             );
             const result = await res.json();
             return result.secure_url;

@@ -1,5 +1,5 @@
 
-import { getFirestore, Filter, collection, getDocs, getDoc, addDoc, where, updateDoc, doc, deleteDoc, writeBatch } from '@react-native-firebase/firestore';
+import { getFirestore, query, collection, getDocs, getDoc, addDoc, where, updateDoc, doc, deleteDoc, writeBatch } from '@react-native-firebase/firestore';
 
 const db = getFirestore();
 
@@ -16,9 +16,9 @@ const fetchAllMovies = async () => {
     }
 }
 
-const fetchMoviesByCategory = async () => {
+const fetchMoviesByCategory = async (id) => {
     try {
-        const snapshot = await getDocs(collection(db, "movies").where("genre", "array-contains", "Kids"))
+        const snapshot = await getDocs(collection(db, "movies").where("genre", "==", id))
         const result = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data }))
         return result;
     }
