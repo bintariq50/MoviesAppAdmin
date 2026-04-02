@@ -5,7 +5,7 @@ import FONTS from "../utils/fonts";
 import Video from "react-native-video";
 
 export default function SingleMovie({ route }) {
-    const movie = route?.params?.movie;
+    const { movie } = route.params;
 
     if (!movie) {
         return (
@@ -18,11 +18,14 @@ export default function SingleMovie({ route }) {
     return (
         <ScrollView style={styles.container}>
             <StatusBar barStyle="light-content" />
-
-        
-            <Video source={{ uri: movie.video_url }} style={{ width: "auto", height: 300, marginBottom: 10 }}
-                resizeMode="contain" controls={true} />
-            {/* Content */}
+            {movie.video_url ? (
+                <Video source={{ uri: movie.video_url }} style={{ width: "auto", height: 300, marginBottom: 10 }}
+                    resizeMode="contain" controls={true} />
+            ) : (
+                <View style={styles.videoNotFound}>
+                    <Text style={styles.error}>No Video Found</Text>
+                </View>
+            )}
             <View style={styles.content}>
                 <Text style={styles.title}>{movie.name}</Text>
 
@@ -39,7 +42,7 @@ export default function SingleMovie({ route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.black
+        backgroundColor: COLORS.white
     },
 
     image: {
@@ -53,10 +56,15 @@ const styles = StyleSheet.create({
 
     title: {
         fontSize: 24,
-        color: COLORS.white,
+        color: COLORS.black,
         marginBottom: 8,
         fontFamily: FONTS.bold
 
+    },
+    videoNotFound: {
+        height: 200,
+        alignItems: "center",
+        justifyContent: "center",
     },
 
     genre: {
@@ -85,7 +93,8 @@ const styles = StyleSheet.create({
     },
 
     error: {
-        fontSize: 16,
-        color: "red"
+        fontSize: 20,
+        fontFamily: FONTS.bold,
+        color: COLORS.danger
     }
 });

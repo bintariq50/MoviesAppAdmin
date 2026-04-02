@@ -76,7 +76,7 @@ export default function Movie() {
         setName(movieData.name)
         setGenre(movieData.genre)
         setImage(movieData.imageUrl)
-        setImage(movieData.videoUrl)
+        setVideo(movieData.videoUrl)
         setShowModal(true)
 
     }
