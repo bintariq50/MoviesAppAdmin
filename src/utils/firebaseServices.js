@@ -3,11 +3,10 @@ import { getFirestore, query, collection, getDocs, getDoc, addDoc, where, update
 
 const db = getFirestore();
 
-
 const fetchAllMovies = async () => {
     try {
-        const snapshot = await getDocs(collection(db, "movies").orderBy('createdAt', 'desc'))
-        const result = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        const movies = await getDocs(collection(db, "movies").orderBy('createdAt', 'desc'))
+        const result = movies.docs.map(doc => ({ id: doc.id, ...doc.data() }))
         return result;
     }
 
@@ -18,8 +17,8 @@ const fetchAllMovies = async () => {
 
 const fetchMoviesByCategory = async (id) => {
     try {
-        const snapshot = await getDocs(collection(db, "movies").where("genre", "==", id))
-        const result = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data }))
+        const movies = await getDocs(collection(db, "movies").where("genre", "==", id))
+        const result = movies.docs.map(doc => ({ id: doc.id, ...doc.data }))
         return result;
     }
     catch (error) {
@@ -68,7 +67,7 @@ const deleteMovie = async (id) => {
 
 const addCategory = async (data) => {
     try {
-        const result = await addDoc(collection(db, "categories"), { ...data });
+        await addDoc(collection(db, "categories"), { ...data });
         return true;
     }
     catch (error) {
@@ -90,7 +89,6 @@ const updateCategory = async (id, data) => {
     try {
         const category = doc(db, "categories", id);
         await updateDoc(category, { ...data });
-        console.log("Category updated");
     } catch (error) {
         console.log("Error updating category:", error);
     }
@@ -98,19 +96,19 @@ const updateCategory = async (id, data) => {
 
 const deleteCategory = async (id) => {
     try {
-        const categoryRef = doc(db, "categories", id);
-        const moviesRef = await getDocs(collection(db, "movies").where('genre', "==", id))
+        const category = doc(db, "categories", id);
+        const movies = await getDocs(collection(db, "movies").where('genre', "==", id))
         const batch = writeBatch(db);
 
-        if (!moviesRef.empty) {
-            moviesRef.forEach((item) => {
-                batch.update(item.ref, {genre: ""});
+        if (!movies.empty) {
+            movies.forEach((item) => {
+                batch.update(item.ref, { genre: "" });
             })
             await batch.commit();
         }
-     
 
-        await deleteDoc(categoryRef);
+
+        await deleteDoc(category);
     } catch (error) {
         throw error
     }
@@ -118,12 +116,20 @@ const deleteCategory = async (id) => {
 
 const fetchCategories = async () => {
     try {
-        const snapshot = await getDocs(collection(db, "categories").orderBy('createdAt', 'desc'))
-        const result = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        const categories = await getDocs(collection(db, "categories").orderBy('createdAt', 'desc'))
+        const result = categories.docs.map(doc => ({ id: doc.id, ...doc.data() }))
         return result;
     } catch (error) {
         throw error
     }
 }
 
+
+const fetchUsers = async () => {
+    try {
+
+    } catch (error) {
+        console.log(error)
+    }
+}
 export { fetchAllMovies, fetchMoviesByCategory, deleteMovie, addMovie, getMovie, updateMovie, fetchCategories, addCategory, updateCategory, deleteCategory, getCategory };

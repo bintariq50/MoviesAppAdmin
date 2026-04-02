@@ -44,8 +44,8 @@ export default function BottomTabNavigation() {
             tabBarActiveTintColor: COLORS.brandPrimary,
             tabBarInactiveTintColor: COLORS.inActiveTintColor
         })} >
-            <Tab.Screen name="HomeTab" component={HomeScreen} options={{ unmountOnBlur: true }} />
-            <Tab.Screen name="MovieTab" component={MovieStack} options={{ unmountOnBlur: true }} />
+            <Tab.Screen name="HomeTab" component={HomeScreen}/>
+            <Tab.Screen name="MovieTab" component={MovieStack}  />
             <Tab.Screen name="ProfileTab" component={ProfileScreen} />
         </Tab.Navigator >
     )

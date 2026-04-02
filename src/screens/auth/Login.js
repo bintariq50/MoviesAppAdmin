@@ -11,6 +11,7 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [loading, setLoading] = useState(false)
     const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert("Error", "Please enter email and password");

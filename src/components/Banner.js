@@ -4,11 +4,12 @@ import COLORS from '../utils/colors';
 import FONTS from "../utils/fonts"
 import PencilIcon from "../assets/icons/PencilIcon";
 import DeleteIcon from "../assets/icons/DeleteIcon";
-import { getCategory } from '../utils/firebaseServices';
 import { useNavigation } from '@react-navigation/native';
 export default function Banner({ id, picture_url,video_url, name, genre, handleEdit, handleDelete }) {
   const navigation = useNavigation();
   const { width, height } = useWindowDimensions();
+
+  
   const handleMoviePlayer = () => {
     navigation.navigate("SingleMovieScreen", {
       movie: { id, video_url, picture_url, name, genre }
